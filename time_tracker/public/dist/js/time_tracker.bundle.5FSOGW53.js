@@ -3,7 +3,7 @@
   frappe.ui.form.Form = class TimerFrom extends frappe.ui.form.Form {
     async render_form(val) {
       await super.render_form(val);
-      add_stopwatch();
+      add_stopwatch(cur_frm.doc.time_tracker_value);
     }
     save(save_action, callback, btn, on_error) {
       var locally_saved = cur_frm.is_new();
@@ -35,6 +35,7 @@
                 workflow_state
               }
             }).then(() => {
+              cur_frm.reload_doc();
             });
           }
         });
@@ -44,7 +45,6 @@
     }
   };
   function add_stopwatch(time_tracker_value = 0) {
-    debugger;
     var interval = sessionStorage.getItem("intrval");
     var dt = frappe.boot.time_tracker_dt_list || [];
     if (dt.includes(cur_frm.doctype)) {
@@ -58,7 +58,6 @@
       }, setCurrentIncrement2 = function() {
         currentIncrement += 1;
         cur_frm.doc.time_tracker_value = currentIncrement;
-        console.log(cur_frm.doc.time_tracker_value);
         return currentIncrement;
       }, initialiseTimer2 = function() {
         debugger;
@@ -91,4 +90,4 @@
     }
   }
 })();
-//# sourceMappingURL=time_tracker.bundle.7TJ66SU7.js.map
+//# sourceMappingURL=time_tracker.bundle.5FSOGW53.js.map

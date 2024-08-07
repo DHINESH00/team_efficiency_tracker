@@ -1,7 +1,7 @@
 frappe.ui.form.Form =class TimerFrom extends frappe.ui.form.Form{
       async render_form(val){
             await super.render_form(val)
-                add_stopwatch()
+                add_stopwatch(cur_frm.doc.time_tracker_value)
         
         }
         save(save_action, callback, btn, on_error){
@@ -38,6 +38,7 @@ frappe.ui.form.Form =class TimerFrom extends frappe.ui.form.Form{
                         workflow_state:workflow_state
                         }
                 }).then(()=>{
+                    cur_frm.reload_doc()
 
                     
 
@@ -57,7 +58,6 @@ frappe.ui.form.Form =class TimerFrom extends frappe.ui.form.Form{
 
 function add_stopwatch(time_tracker_value = 0) {
     // Declare interval variable to manage the stopwatch interval
-    debugger
     var interval = sessionStorage.getItem('intrval');
 
     // Get the list of data trackers
@@ -94,7 +94,6 @@ function add_stopwatch(time_tracker_value = 0) {
         function setCurrentIncrement() {
             currentIncrement += 1;
             cur_frm.doc.time_tracker_value = currentIncrement;
-            console.log(cur_frm.doc.time_tracker_value);
             return currentIncrement;
         }
 
@@ -120,7 +119,6 @@ function add_stopwatch(time_tracker_value = 0) {
             }
         }
 
-        // For demonstration, stop the timer after 10 seconds
        
     }
 }
