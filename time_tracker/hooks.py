@@ -12,8 +12,8 @@ app_license = "MIT"
 
 # include js, css files in header of desk.html
 # app_include_css = "/assets/time_tracker/css/time_tracker.css"
-# app_include_js = "/assets/time_tracker/js/time_tracker.js"
-
+app_include_js = "time_tracker.bundle.js"
+extend_bootinfo="time_tracker.time_tracker.doctype.time_tracker_setting.time_tracker_setting.set_time_tracker_value_list"
 # include js, css files in header of web template
 # web_include_css = "/assets/time_tracker/css/time_tracker.css"
 # web_include_js = "/assets/time_tracker/js/time_tracker.js"
@@ -155,9 +155,9 @@ app_license = "MIT"
 # Overriding Methods
 # ------------------------------
 #
-# override_whitelisted_methods = {
-#	"frappe.desk.doctype.event.event.get_events": "time_tracker.event.get_events"
-# }
+override_whitelisted_methods = {
+	"frappe.model.workflow.apply_workflow": "time_tracker.time_tracker.doctype.activity_timer_log.activity_timer_log.create_activity_timer_on_workflow"
+}
 #
 # each overriding function accepts a `data` argument;
 # generated from the base implementation of the doctype dashboard,
