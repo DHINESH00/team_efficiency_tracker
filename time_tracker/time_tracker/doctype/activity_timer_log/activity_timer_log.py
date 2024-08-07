@@ -75,7 +75,7 @@ def create_activity_timer_on_workflow(doc, action):
 		frappe.throw(_("Illegal Document Status for {0}").format(next_state.state))
 
 	doc.add_comment("Workflow", _(next_state.state))
-	time_tracker_dt_list=frappe.db.get_all("Time Tracker Setting Table",{ "parent":"Time Tracker Setting" }, "document_type",pluck="document_type")
+	time_tracker_dt_list=frappe.db.get_all("Time Tracker Setting Table",{ "parent":"Time Tracker Settings" }, "document_type",pluck="document_type")
 	if doc.doctype in time_tracker_dt_list:
 		create_activity_time_log(doc.doctype,doc.name,action,frappe.session.user,time_tracker_value,status=doc.get("status"),workflow_state=transition.next_state)
 	return doc

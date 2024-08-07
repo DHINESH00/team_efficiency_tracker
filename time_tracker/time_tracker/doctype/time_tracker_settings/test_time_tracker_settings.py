@@ -5,5 +5,5 @@
 from frappe.tests.utils import FrappeTestCase
 
 
-class TestTimeTrackerSetting(FrappeTestCase):
+class TestTimeTrackerSettings(FrappeTestCase):
 	pass

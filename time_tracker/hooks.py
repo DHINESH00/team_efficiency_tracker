@@ -13,7 +13,7 @@ app_license = "MIT"
 # include js, css files in header of desk.html
 # app_include_css = "/assets/time_tracker/css/time_tracker.css"
 app_include_js = "time_tracker.bundle.js"
-extend_bootinfo="time_tracker.time_tracker.doctype.time_tracker_setting.time_tracker_setting.set_time_tracker_value_list"
+extend_bootinfo="time_tracker.time_tracker.doctype.time_tracker_settings.time_tracker_settings.set_time_tracker_value_list"
 # include js, css files in header of web template
 # web_include_css = "/assets/time_tracker/css/time_tracker.css"
 # web_include_js = "/assets/time_tracker/js/time_tracker.js"

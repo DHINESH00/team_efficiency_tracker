@@ -20,10 +20,10 @@
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2024-08-01 11:12:15.604324",
+ "modified": "2024-08-07 15:17:17.189062",
  "modified_by": "Administrator",
  "module": "Time Tracker",
- "name": "Time Tracker Setting",
+ "name": "Time Tracker Settings",
  "owner": "Administrator",
  "permissions": [
   {

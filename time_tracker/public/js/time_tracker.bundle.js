@@ -1,7 +1,7 @@
 frappe.ui.form.Form =class TimerFrom extends frappe.ui.form.Form{
       async render_form(val){
             await super.render_form(val)
-                add_stopwatch(cur_frm.doc.time_tracker_value)
+                add_stopwatch()
         
         }
         save(save_action, callback, btn, on_error){
@@ -17,7 +17,7 @@ frappe.ui.form.Form =class TimerFrom extends frappe.ui.form.Form{
                 if( locally_saved){
                     Action ="Create"
                 }
-                else if (save_action=="Save"){
+                else if (save_action=="save" ||save_action=="Save"){
                     Action="Update"
                 }
                 else{
@@ -39,7 +39,7 @@ frappe.ui.form.Form =class TimerFrom extends frappe.ui.form.Form{
                         }
                 }).then(()=>{
 
-                    frappe.ui.toolbar.clear_cache();
+                    
 
                 })
             }
@@ -55,25 +55,33 @@ frappe.ui.form.Form =class TimerFrom extends frappe.ui.form.Form{
     
 }
 
-function add_stopwatch(time_tracker_value=0){
-    
-   
-    var dt=frappe.boot.time_tracker_dt_list || [];
-    if (dt.includes(cur_frm.doctype)){
+function add_stopwatch(time_tracker_value = 0) {
+    // Declare interval variable to manage the stopwatch interval
+    debugger
+    var interval = sessionStorage.getItem('intrval');
 
-        const timer = `<div class="btn btn-primary btn-sm primary-action">
-        <span class="hours">00</span>
-        <span class="colon">:</span>
-        <span class="minutes">00</span>
-        <span class="colon">:</span>
-        <span class="seconds">00</span>
-    </div>`;
+    // Get the list of data trackers
+    var dt = frappe.boot.time_tracker_dt_list || [];
+    if (dt.includes(cur_frm.doctype)) {
 
+        // Stopwatch HTML
+        const timer = `
+            <div class="btn btn-primary btn-sm primary-action">
+                <span class="hours">00</span>
+                <span class="colon">:</span>
+                <span class="minutes">00</span>
+                <span class="colon">:</span>
+                <span class="seconds">00</span>
+            </div>`;
 
-    var section = cur_frm.toolbar.page.add_inner_message(timer);
-    let currentIncrement=(time_tracker_value||0 );
-    initialiseTimer()
-    function updateStopwatch(increment) {
+        // Add stopwatch to the form
+        var section = cur_frm.toolbar.page.add_inner_message(timer);
+        var currentIncrement = time_tracker_value || 0;
+
+        // Initialize the timer
+        initialiseTimer();
+
+        function updateStopwatch(increment) {
             var hours = Math.floor(increment / 3600);
             var minutes = Math.floor((increment - (hours * 3600)) / 60);
             var seconds = increment - (hours * 3600) - (minutes * 60);
@@ -82,74 +90,37 @@ function add_stopwatch(time_tracker_value=0){
             $(section).find(".minutes").text(minutes < 10 ? ("0" + minutes.toString()) : minutes.toString());
             $(section).find(".seconds").text(seconds < 10 ? ("0" + seconds.toString()) : seconds.toString());
         }
-    function setCurrentIncrement() {
+
+        function setCurrentIncrement() {
             currentIncrement += 1;
             cur_frm.doc.time_tracker_value = currentIncrement;
+            console.log(cur_frm.doc.time_tracker_value);
             return currentIncrement;
         }
-    function initialiseTimer() {
-            const interval = setInterval(function() {
+
+        function initialiseTimer() {
+            debugger
+            // Clear any existing interval before starting a new one
+            if (interval) {
+                stopTimer();
+            }
+            
+            interval = setInterval(function() {
                 var current = setCurrentIncrement();
                 updateStopwatch(current);
             }, 1000);
+            sessionStorage.setItem('intrval',interval);
         }
+
+        // Optional: Add a way to stop the timer if needed
+        function stopTimer() {
+            if (interval) {
+                clearInterval(interval);
+                interval = null; // Set to null to indicate the timer is stopped
+            }
+        }
+
+        // For demonstration, stop the timer after 10 seconds
+       
     }
-}
-frappe.ui.form.States =class TimerFrom_work extends frappe.ui.form.States {
-    show_actions() {
-		var added = false;
-		var me = this;
-
-		// if the loaded doc is dirty, don't show workflow buttons
-		if (this.frm.doc.__unsaved === 1) {
-			return;
-		}
-
-		function has_approval_access(transition) {
-			let approval_access = false;
-			const user = frappe.session.user;
-			if (
-				user === "Administrator" ||
-				transition.allow_self_approval ||
-				user !== me.frm.doc.owner
-			) {
-				approval_access = true;
-			}
-			return approval_access;
-		}
-
-		frappe.workflow.get_transitions(this.frm.doc).then((transitions) => {
-			this.frm.page.clear_actions_menu();
-			transitions.forEach((d) => {
-				if (frappe.user_roles.includes(d.allowed) && has_approval_access(d)) {
-					added = true;
-					me.frm.page.add_action_item(__(d.action), function () {
-						// set the workflow_action for use in form scripts
-						frappe.dom.freeze();
-						me.frm.selected_workflow_action = d.action;
-						me.frm.script_manager.trigger("before_workflow_action").then(() => {
-							frappe
-								.xcall("time_tracker.time_tracker.doctype.activity_timer_log.activity_timer_log.create_activity_timer_on_workflow", {
-									doc: me.frm.doc,
-									action: d.action,
-								})
-								.then((doc) => {
-									frappe.model.sync(doc);
-									me.frm.refresh();
-									me.frm.selected_workflow_action = null;
-									me.frm.script_manager.trigger("after_workflow_action");
-								})
-								.finally(() => {
-                                    
-									frappe.dom.unfreeze();
-                                    frappe.ui.toolbar.clear_cache();
-								});
-						});
-					});
-				}
-			});
-
-			this.setup_btn(added);
-		});
-	}
 }
