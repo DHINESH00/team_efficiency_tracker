@@ -12,8 +12,9 @@ frappe.ui.form.Form =class TimerFrom extends frappe.ui.form.Form{
                 frappe.ui.form.close_grid_form();
                 me.validate_and_save(save_action, callback, btn, on_error, resolve, reject);
             })
-                .then(() => {
+                .then((r) => {
                     me.show_success_action();
+                    if( ! cur_frm.doc.__unsaved){
                     var workflow_state=cur_frm.doc.workflow_state?cur_frm.doc.workflow_state:""
                     var status=cur_frm.doc.status?cur_frm.doc.status:""
                     var dt=frappe.boot.time_tracker_dt_list || [];
@@ -27,6 +28,10 @@ frappe.ui.form.Form =class TimerFrom extends frappe.ui.form.Form{
                         else if (save_action=="save" ||save_action=="Save"){
                             Action="Update"
                         }
+                        else if(save_action == "Update")
+                            {
+                                Action="Update After Submit"
+                            }
                         else{
                             Action= save_action
                         }
@@ -53,6 +58,7 @@ frappe.ui.form.Form =class TimerFrom extends frappe.ui.form.Form{
                     }
                   
                 }
+            }
                 })
                 .catch((e) => {
                     console.error(e);
@@ -60,54 +66,6 @@ frappe.ui.form.Form =class TimerFrom extends frappe.ui.form.Form{
             
         }
 
-    //      save(save_action, callback, btn, on_error){
-            
-    //         var locally_saved = cur_frm.is_new()
-    //         var workflow_state=cur_frm.doc.workflow_state?cur_frm.doc.workflow_state:""
-    //         var status=cur_frm.doc.status?cur_frm.doc.status:""
-    //         var dt=frappe.boot.time_tracker_dt_list || [];
-    //         if (dt.includes(cur_frm.doctype)){
-    //          super.save(save_action, callback, btn, on_error)
-    //             debugger
-                
-    //             var Action=""
-    //             if( locally_saved){
-    //                 Action ="Create"
-    //             }
-    //             else if (save_action=="save" ||save_action=="Save"){
-    //                 Action="Update"
-    //             }
-    //             else{
-    //                 Action= save_action
-    //             }
-    //             var dt=frappe.boot.time_tracker_dt_list || [];
-    //             if (dt.includes(cur_frm.doctype)){
-    //             frappe.call({
-    //                 async: false,
-    //                 method: "time_tracker.time_tracker.doctype.activity_timer_log.activity_timer_log.create_activity_time_log",
-    //                 args: {
-    //                     dt: cur_frm.doctype,
-    //                     dn: cur_frm.doc.name,
-    //                     action: Action,
-    //                     user: frappe.session.user,
-    //                     time_taken: cur_frm.doc.time_tracker_value,
-    //                     status:status,
-    //                     workflow_state:workflow_state
-    //                     }
-    //             }).then(()=>{
-    //                 cur_frm.reload_doc()
-
-                    
-
-    //             })
-    //         }
-          
-    //     }
-    //     else{
-    //         super.save(save_action, callback, btn, on_error)
-    //     }
-       
-    // }
     
 
     
