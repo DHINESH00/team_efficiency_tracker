@@ -4,15 +4,16 @@ frappe.ui.form.Form =class TimerFrom extends frappe.ui.form.Form{
                 add_stopwatch(cur_frm.doc.time_tracker_value)
         
         }
-        save(save_action, callback, btn, on_error){
+        async save(save_action, callback, btn, on_error){
             
             var locally_saved = cur_frm.is_new()
             var workflow_state=cur_frm.doc.workflow_state?cur_frm.doc.workflow_state:""
             var status=cur_frm.doc.status?cur_frm.doc.status:""
             var dt=frappe.boot.time_tracker_dt_list || [];
             if (dt.includes(cur_frm.doctype)){
-            super.save(save_action, callback, btn, on_error).then(()=>{
-
+            await super.save(save_action, callback, btn, on_error)
+                debugger
+                
                 var Action=""
                 if( locally_saved){
                     Action ="Create"
@@ -44,7 +45,7 @@ frappe.ui.form.Form =class TimerFrom extends frappe.ui.form.Form{
 
                 })
             }
-            })
+          
         }
         else{
             super.save(save_action, callback, btn, on_error)
@@ -98,7 +99,7 @@ function add_stopwatch(time_tracker_value = 0) {
         }
 
         function initialiseTimer() {
-            debugger
+            
             // Clear any existing interval before starting a new one
             if (interval) {
                 stopTimer();

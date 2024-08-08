@@ -5,40 +5,40 @@
       await super.render_form(val);
       add_stopwatch(cur_frm.doc.time_tracker_value);
     }
-    save(save_action, callback, btn, on_error) {
+    async save(save_action, callback, btn, on_error) {
       var locally_saved = cur_frm.is_new();
       var workflow_state = cur_frm.doc.workflow_state ? cur_frm.doc.workflow_state : "";
       var status = cur_frm.doc.status ? cur_frm.doc.status : "";
       var dt = frappe.boot.time_tracker_dt_list || [];
       if (dt.includes(cur_frm.doctype)) {
-        super.save(save_action, callback, btn, on_error).then(() => {
-          var Action = "";
-          if (locally_saved) {
-            Action = "Create";
-          } else if (save_action == "save" || save_action == "Save") {
-            Action = "Update";
-          } else {
-            Action = save_action;
-          }
-          var dt2 = frappe.boot.time_tracker_dt_list || [];
-          if (dt2.includes(cur_frm.doctype)) {
-            frappe.call({
-              async: false,
-              method: "time_tracker.time_tracker.doctype.activity_timer_log.activity_timer_log.create_activity_time_log",
-              args: {
-                dt: cur_frm.doctype,
-                dn: cur_frm.doc.name,
-                action: Action,
-                user: frappe.session.user,
-                time_taken: cur_frm.doc.time_tracker_value,
-                status,
-                workflow_state
-              }
-            }).then(() => {
-              cur_frm.reload_doc();
-            });
-          }
-        });
+        await super.save(save_action, callback, btn, on_error);
+        debugger;
+        var Action = "";
+        if (locally_saved) {
+          Action = "Create";
+        } else if (save_action == "save" || save_action == "Save") {
+          Action = "Update";
+        } else {
+          Action = save_action;
+        }
+        var dt = frappe.boot.time_tracker_dt_list || [];
+        if (dt.includes(cur_frm.doctype)) {
+          frappe.call({
+            async: false,
+            method: "time_tracker.time_tracker.doctype.activity_timer_log.activity_timer_log.create_activity_time_log",
+            args: {
+              dt: cur_frm.doctype,
+              dn: cur_frm.doc.name,
+              action: Action,
+              user: frappe.session.user,
+              time_taken: cur_frm.doc.time_tracker_value,
+              status,
+              workflow_state
+            }
+          }).then(() => {
+            cur_frm.reload_doc();
+          });
+        }
       } else {
         super.save(save_action, callback, btn, on_error);
       }
@@ -60,7 +60,6 @@
         cur_frm.doc.time_tracker_value = currentIncrement;
         return currentIncrement;
       }, initialiseTimer2 = function() {
-        debugger;
         if (interval) {
           stopTimer2();
         }
@@ -90,4 +89,4 @@
     }
   }
 })();
-//# sourceMappingURL=time_tracker.bundle.5FSOGW53.js.map
+//# sourceMappingURL=time_tracker.bundle.YOAEYAIA.js.map
