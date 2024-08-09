@@ -22,7 +22,7 @@ def create_activity_time_log(dt,dn,action,user,time_taken,status,workflow_state)
 	doc.status=status
 	doc.workflow_state=workflow_state
 	doc.save(ignore_permissions=True)
-	frappe.db.update(dt,dn,"time_tracker_value",0)
+	frappe.db.set_value(dt,dn,"time_tracker_value",0)
 	return doc
 @frappe.whitelist()
 def create_activity_timer_on_workflow(doc, action):

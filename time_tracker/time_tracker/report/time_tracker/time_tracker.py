@@ -5,8 +5,8 @@ import frappe
 from frappe import _
 
 def execute(filters=None):
-	col_find_action=frappe.db.get_list("Activity Timer Log",{"dt":filters.get("doctype_value"),"creation":["between",[filters.get("from_date"),filters.get("to_date")]],"action":["!=",""]},["distinct action"],pluck="action",order_by="modified,creation")
-	col_find_workflow_state=frappe.db.get_list("Activity Timer Log",{"dt":filters.get("doctype_value"),"creation":["between",[filters.get("from_date"),filters.get("to_date")]],"workflow_state":["!=",""]},["distinct workflow_state"],pluck ="workflow_state",order_by="modified,creation")
+	col_find_workflow_state=frappe.db.get_list("Activity Timer Log",{"dt":filters.get("doctype_value"),"creation":["between",[filters.get("from_date"),filters.get("to_date")]],"workflow_state":["!=",""]},["distinct workflow_state"],pluck ="workflow_state",order_by="creation")
+	col_find_action=frappe.db.get_list("Activity Timer Log",{"dt":filters.get("doctype_value"),"creation":["between",[filters.get("from_date"),filters.get("to_date")]],"action":["!=",""]},["distinct action"],pluck="action",order_by="creation")
 	def get_columns(filters,col_find_action,col_find_workflow_state):
 		
 		
@@ -15,7 +15,6 @@ def execute(filters=None):
 			"fieldtype": "Data",
 			"fieldname": "ref_docname",
 			"width": 100,}]
-		
 		for  action in col_find_action:
 			columns= columns+[
 				{
@@ -50,40 +49,40 @@ def execute(filters=None):
 			},
 
 			]
-			for  action in col_find_workflow_state:
-				columns= columns+[
-				{
-				"label": _("Document open time"),
-				"fieldtype": "Data",
-				"fieldname": "open_time"+action,
-				"width": 100,
-			},
+		for  action in col_find_workflow_state:
+			columns= columns+[
 			{
-				"label": _("Document close time"),
-				"fieldtype": "Data",
-				"fieldname": "close_time"+action,
-				"width": 100,
-			},
-			{
-				"label": _(action),
-				"fieldtype": "Data",
-				"fieldname": "time_taken"+action,
-				"width": 100,
-			},
-			{
-				"label": _(action +" On"),
-				"fieldtype": "Data",
-				"fieldname": "on"+action,
-				"width": 100,
-			},
-			{
-				"label": _(action +" by"),
-				"fieldtype": "Data",
-				"fieldname": "by"+action,
-				"width": 100,
-			},
+			"label": _("Document open time"),
+			"fieldtype": "Data",
+			"fieldname": "open_time"+action,
+			"width": 100,
+		},
+		{
+			"label": _("Document close time"),
+			"fieldtype": "Data",
+			"fieldname": "close_time"+action,
+			"width": 100,
+		},
+		{
+			"label": _(action),
+			"fieldtype": "Data",
+			"fieldname": "time_taken"+action,
+			"width": 100,
+		},
+		{
+			"label": _(action +" On"),
+			"fieldtype": "Data",
+			"fieldname": "on"+action,
+			"width": 100,
+		},
+		{
+			"label": _(action +" by"),
+			"fieldtype": "Data",
+			"fieldname": "by"+action,
+			"width": 100,
+		},
 
-			]
+		]
 		return columns
 	def get_data(filters,col_find_action,col_find_workflow_state):
 		data=[]
@@ -92,7 +91,7 @@ def execute(filters=None):
 					dn as ref_docname,
 					DATE_SUB(creation, INTERVAL time_taken SECOND) as open_time,
 					creation as close_time,
-					time_taken as time_taken,
+					ROUND(time_taken/60,3) as time_taken,
 					Date(creation)as on_v,
 					owner as by_v,
 					workflow_state,
