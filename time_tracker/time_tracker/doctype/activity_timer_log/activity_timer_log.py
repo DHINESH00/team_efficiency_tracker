@@ -12,7 +12,7 @@ class WorkflowTransitionError(frappe.ValidationError):
 class ActivityTimerLog(Document):
 	pass
 @frappe.whitelist()
-def create_activity_time_log(dt,dn,action,user,time_taken,status,workflow_state):
+def create_activity_time_log(dt,dn,user="",time_taken="",status="",workflow_state="",action=""):
 	doc=frappe.new_doc("Activity Timer Log")
 	doc.action=action
 	doc.user=user
@@ -79,5 +79,5 @@ def create_activity_timer_on_workflow(doc, action):
 	doc.add_comment("Workflow", _(next_state.state))
 	time_tracker_dt_list=frappe.db.get_all("Time Tracker Setting Table",{ "parent":"Time Tracker Settings" }, "document_type",pluck="document_type")
 	if doc.doctype in time_tracker_dt_list:
-		create_activity_time_log(doc.doctype,doc.name,action,frappe.session.user,time_tracker_value,status=doc.get("status"),workflow_state=transition.next_state)
+		create_activity_time_log(dt=doc.doctype,dn=doc.name,user=frappe.session.user,time_taken=time_tracker_value,status=doc.get("status"),workflow_state=transition.next_state,action=action)
 	return doc
