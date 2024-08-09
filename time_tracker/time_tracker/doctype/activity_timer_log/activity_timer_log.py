@@ -29,8 +29,6 @@ def create_activity_timer_on_workflow(doc, action):
 	"""Allow workflow action on the current doc"""
 	doc = frappe.get_doc(frappe.parse_json(doc))
 	time_tracker_value=doc.get("time_tracker_value")
-	if time_tracker_value:
-		frappe.db.update(doc.doctype,doc.name,"time_tracker_value",0)
 	doc.load_from_db()
 	workflow = get_workflow(doc.doctype)
 	transitions = get_transitions(doc, workflow)
