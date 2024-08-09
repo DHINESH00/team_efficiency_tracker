@@ -28,8 +28,9 @@ def create_activity_time_log(dt,dn,action,user,time_taken,status,workflow_state)
 def create_activity_timer_on_workflow(doc, action):
 	"""Allow workflow action on the current doc"""
 	doc = frappe.get_doc(frappe.parse_json(doc))
-	time_tracker_value=doc.time_tracker_value
-	frappe.db.update(doc.doctype,doc.name,"time_tracker_value",0)
+	time_tracker_value=doc.get("time_tracker_value")
+	if time_tracker_value:
+		frappe.db.update(doc.doctype,doc.name,"time_tracker_value",0)
 	doc.load_from_db()
 	workflow = get_workflow(doc.doctype)
 	transitions = get_transitions(doc, workflow)
@@ -58,7 +59,8 @@ def create_activity_timer_on_workflow(doc, action):
 		doc.set(next_state.update_field, next_state.update_value)
 	action=""
 	new_docstatus = cint(next_state.doc_status)
-	doc.set("time_tracker_value",0)
+	if time_tracker_value:
+		doc.set("time_tracker_value",0)
 	if doc.docstatus.is_draft() and new_docstatus == DocStatus.draft():
 		action="Update"
 		doc.save()
