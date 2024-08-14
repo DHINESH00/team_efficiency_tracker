@@ -9,8 +9,8 @@ from time_tracker import __version__ as version
 setup(
 	name="time_tracker",
 	version=version,
-	description="Track time for doctype action dynamically",
-	author="dhinesh@aerele.in",
+	description="Tracks time ,activity of the selection doctypes",
+	author="Aerele Technologies",
 	author_email="dhinesh@aerele.in",
 	packages=find_packages(),
 	zip_safe=False,

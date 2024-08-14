@@ -2,8 +2,8 @@ from . import __version__ as app_version
 
 app_name = "time_tracker"
 app_title = "Time Tracker"
-app_publisher = "dhinesh@aerele.in"
-app_description = "Track time for doctype action dynamically"
+app_publisher = "Aerele Technologies"
+app_description = "Tracks time ,activity of the selection doctypes"
 app_email = "dhinesh@aerele.in"
 app_license = "MIT"
 
